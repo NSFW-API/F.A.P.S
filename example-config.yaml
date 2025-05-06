@@ -1,0 +1,44 @@
+meta:
+  name: "prompt_vs_cfg"
+  base_model: "stability-ai/sdxl:latest"
+  output_dir: "./runs"
+
+grid_axes:
+  rows: "prompt"
+  cols: "cfg"
+
+params:
+  # Varying parameters
+  prompt:
+    list:
+      - "A serene mountain landscape with a clear lake at sunset"
+      - "A futuristic cityscape with flying cars and neon lights"
+      - "A cozy cottage in a forest clearing with warm light from the windows"
+  
+  cfg:
+    range:
+      start: 4.0
+      end: 12.0
+      step: 2.0
+  
+  # Static parameters
+  width:
+    static: 1024
+  
+  height:
+    static: 1024
+  
+  sampler:
+    static: "euler_a"
+  
+  scheduler:
+    static: "karras"
+  
+  steps:
+    static: 40
+  
+  # Random seed (generates a new random value for each combination)
+  seed:
+    random_int:
+      min: 1
+      max: 4294967295

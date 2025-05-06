@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "faps"
+version = "0.1.0"
+description = "F.A.P.S. (Fine-tuned Analytical Parameter Sweeper) - A lightweight CLI tool that launches many image-generation jobs on Replicate in parallel"
+readme = "README.md"
+authors = [
+    {name = "The NSFW Company Team"}
+]
+requires-python = ">=3.10"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "replicate>=0.13.0",
+    "aiohttp>=3.8.5",
+    "pydantic>=2.0.0",
+    "PyYAML>=6.0",
+    "jinja2>=3.1.2",
+    "Pillow>=9.5.0",
+    "tqdm>=4.65.0",
+    "numpy>=1.24.0"
+]
+
+[project.scripts]
+faps = "cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/NSFW-API/F.A.P.S"
+"Bug Tracker" = "https://github.com/NSFW-API/F.A.P.S/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["*"]
+exclude = ["tests*"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
