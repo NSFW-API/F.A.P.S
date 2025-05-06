@@ -142,8 +142,8 @@ def create_parser():
     # Run command
     run_parser = subparsers.add_parser("run", help="Run a parameter sweep")
     run_parser.add_argument("config", help="Path to the configuration file (YAML or JSON)")
-    run_parser.add_argument("--concurrency", "-c", type=int, default=8,
-                          help="Maximum number of concurrent jobs (default: 8)")
+    run_parser.add_argument("--concurrency", "-c", type=int, default=99,
+                          help="Maximum number of concurrent jobs (default: 99)")
     run_parser.add_argument("--overwrite", "-o", action="store_true",
                           help="Overwrite existing results")
     run_parser.add_argument("--retry-failed", "-r", action="store_true",

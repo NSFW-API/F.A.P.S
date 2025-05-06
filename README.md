@@ -3,6 +3,12 @@
 A lightweight CLI tool that launches many image-generation jobs on Replicate in parallel, sweeping over user-defined
 parameter combinations, then collates the outputs into a browsable HTML grid.
 
+## Example Output
+
+![F.A.P.S. Grid Output](docs/images/grid_screenshot.png)
+
+*Example of a parameter sweep comparing different prompts (rows) and CFG values (columns)*
+
 ## Features
 
 - **Rapid experimentation** - Explore model behavior across prompts and numeric parameters without manual repetition
