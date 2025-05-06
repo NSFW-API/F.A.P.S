@@ -45,3 +45,6 @@ Thumbs.db
 
 # Output directories created by F.A.P.S.
 runs/
+
+# User configuration files
+sweep_configs/*

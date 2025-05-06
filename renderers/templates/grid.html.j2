@@ -9,7 +9,7 @@
         *, *::before, *::after {
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.5;
@@ -18,32 +18,61 @@
             color: #333;
             background-color: #f5f5f5;
         }
-        
+
         .container {
             max-width: 1600px;
             margin: 0 auto;
             padding: 2rem 1rem;
         }
-        
+
         header {
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
-        
+
+        .header-left {
+            flex: 1;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         h1 {
             margin: 0 0 0.5rem 0;
             color: #222;
         }
-        
+
         .meta {
             font-size: 0.9rem;
             color: #555;
             margin-bottom: 1rem;
         }
-        
+
         .meta-item {
             margin-right: 1.5rem;
         }
-        
+
+        /* Toggle button */
+        .toggle-button {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+
         /* Grid styles */
         .grid-container {
             overflow-x: auto;
@@ -52,12 +81,12 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1rem;
         }
-        
+
         table {
             border-collapse: collapse;
             width: 100%;
         }
-        
+
         th {
             text-align: left;
             padding: 0.75rem;
@@ -68,20 +97,20 @@
             background: white;
             z-index: 10;
         }
-        
+
         td {
             padding: 0.5rem;
             border: 1px solid #eee;
             vertical-align: top;
         }
-        
+
         .cell {
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
         }
-        
+
         .cell-image {
             position: relative;
             width: 256px;
@@ -94,28 +123,33 @@
             background-color: #f0f0f0;
             border-radius: 4px;
         }
-        
+
         .cell-image img {
             max-width: 100%;
             max-height: 100%;
             transition: transform 0.2s ease;
         }
-        
+
         .cell-image:hover img {
             transform: scale(1.05);
         }
-        
+
         .cell-image.selected {
             outline: 3px solid #007bff;
         }
-        
+
         .cell-caption {
             font-size: 0.85rem;
             margin-top: 0.5rem;
             text-align: center;
             color: #555;
+            display: none; /* Hide metadata by default */
         }
-        
+
+        .show-metadata .cell-caption {
+            display: block; /* Show when toggled */
+        }
+
         .cell-error {
             display: flex;
             justify-content: center;
@@ -128,7 +162,7 @@
             padding: 1rem;
             text-align: center;
         }
-        
+
         /* Lightbox styles */
         .lightbox {
             display: none;
@@ -143,31 +177,31 @@
             align-items: center;
             flex-direction: column;
         }
-        
+
         .lightbox.active {
             display: flex;
         }
-        
+
         .lightbox-content {
             max-width: 90%;
             max-height: 80%;
             display: flex;
             position: relative;
         }
-        
+
         .lightbox-image {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
-        
+
         .lightbox-image-container {
             background-color: #000;
             padding: 10px;
             border-radius: 5px;
             margin-right: 20px;
         }
-        
+
         .lightbox-info {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 1rem;
@@ -177,7 +211,7 @@
             overflow-y: auto;
             color: #333;
         }
-        
+
         .lightbox-close {
             position: absolute;
             top: 20px;
@@ -193,7 +227,7 @@
             align-items: center;
             border-radius: 50%;
         }
-        
+
         /* Compare mode */
         .compare-button {
             position: fixed;
@@ -210,11 +244,11 @@
             z-index: 100;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .compare-button.visible {
             display: block;
         }
-        
+
         .compare-container {
             display: none;
             position: fixed;
@@ -227,11 +261,11 @@
             padding: 2rem;
             overflow: auto;
         }
-        
+
         .compare-container.active {
             display: block;
         }
-        
+
         .compare-grid {
             display: flex;
             flex-wrap: wrap;
@@ -239,7 +273,7 @@
             gap: 1rem;
             margin-top: 2rem;
         }
-        
+
         .compare-item {
             display: flex;
             flex-direction: column;
@@ -248,17 +282,17 @@
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .compare-image {
             width: 100%;
             height: auto;
         }
-        
+
         .compare-info {
             padding: 1rem;
             font-size: 0.9rem;
         }
-        
+
         .compare-close {
             position: fixed;
             top: 20px;
@@ -275,7 +309,7 @@
             border-radius: 50%;
             z-index: 1010;
         }
-        
+
         /* Helper */
         pre {
             background-color: #f5f5f5;
@@ -287,56 +321,61 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
+<div class="container">
+    <header>
+        <div class="header-left">
             <h1>{{ meta.name }}</h1>
             <div class="meta">
                 <span class="meta-item"><strong>Model:</strong> {{ meta.base_model }}</span>
                 <span class="meta-item"><strong>Generated:</strong> {{ meta.rendered_time }}</span>
             </div>
-        </header>
-        
-        <div class="grid-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        {% for col_value in grid_data.col_values %}
-                        <th>
-                            {% if grid_data.col_param %}
-                                {{ grid_data.col_param }}: {{ col_value }}
-                            {% else %}
-                                &nbsp;
-                            {% endif %}
-                        </th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in grid_data.grid %}
-                    <tr>
-                        <th>{{ grid_data.row_param }}: {{ row[0].row_value }}</th>
-                        
-                        {% for cell in row %}
+        </div>
+        <div class="header-actions">
+            <button id="toggle-metadata" class="toggle-button">Show Metadata</button>
+        </div>
+    </header>
+
+    <div class="grid-container">
+        <table>
+            <thead>
+            <tr>
+                <th></th>
+                {% for col_value in grid_data.col_values %}
+                    <th>
+                        {% if grid_data.col_param %}
+                            {{ grid_data.col_param }}: {{ col_value }}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in grid_data.grid %}
+                <tr>
+                    <th>{{ grid_data.row_param }}: {{ row[0].row_value }}</th>
+
+                    {% for cell in row %}
                         <td>
                             <div class="cell">
                                 {% if cell.status == "succeeded" %}
-                                <div class="cell-image" 
-                                    data-hash="{{ cell._hash }}"
-                                    data-image="{{ base_url }}/outputs/{{ cell._hash }}/output.png" 
-                                    data-params="{{ cell.params|tojson }}">
-                                    <img src="{{ base_url }}/outputs/{{ cell._hash }}/thumb.jpg" alt="Result">
-                                </div>
+                                    <div class="cell-image"
+                                         data-hash="{{ cell._hash }}"
+                                         data-image="{{ base_url }}/outputs/{{ cell._hash }}/output.png"
+                                         data-params="{{ cell.params|tojson }}">
+                                        <img src="{{ base_url }}/outputs/{{ cell._hash }}/thumb.jpg" alt="Result">
+                                    </div>
                                 {% else %}
-                                <div class="cell-error">
-                                    {{ cell.status|capitalize }}
-                                    {% if cell.error %}
-                                    <br>
-                                    <small>{{ cell.error }}</small>
-                                    {% endif %}
-                                </div>
+                                    <div class="cell-error">
+                                        {{ cell.status|capitalize }}
+                                        {% if cell.error %}
+                                            <br>
+                                            <small>{{ cell.error }}</small>
+                                        {% endif %}
+                                    </div>
                                 {% endif %}
-                                
+
                                 <div class="cell-caption">
                                     {% for param in grid_data.all_params %}
                                         {% if param != grid_data.row_param and param != grid_data.col_param and cell.params and param in cell.params %}
@@ -346,166 +385,181 @@
                                 </div>
                             </div>
                         </td>
-                        {% endfor %}
-                    </tr>
                     {% endfor %}
-                </tbody>
-            </table>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Lightbox for single image view -->
+<div class="lightbox">
+    <div class="lightbox-close">&times;</div>
+    <div class="lightbox-content">
+        <div class="lightbox-image-container">
+            <img class="lightbox-image" src="" alt="Full-size image">
+        </div>
+        <div class="lightbox-info">
+            <h3>Parameters</h3>
+            <pre class="lightbox-params"></pre>
         </div>
     </div>
-    
-    <!-- Lightbox for single image view -->
-    <div class="lightbox">
-        <div class="lightbox-close">&times;</div>
-        <div class="lightbox-content">
-            <div class="lightbox-image-container">
-                <img class="lightbox-image" src="" alt="Full-size image">
-            </div>
-            <div class="lightbox-info">
-                <h3>Parameters</h3>
-                <pre class="lightbox-params"></pre>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Compare mode -->
-    <button class="compare-button">Compare Selected (<span class="compare-count">0</span>)</button>
-    
-    <div class="compare-container">
-        <div class="compare-close">&times;</div>
-        <div class="compare-grid"></div>
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lightbox functionality
-            const lightbox = document.querySelector('.lightbox');
-            const lightboxImage = document.querySelector('.lightbox-image');
-            const lightboxParams = document.querySelector('.lightbox-params');
-            const lightboxClose = document.querySelector('.lightbox-close');
-            
-            // Compare functionality
-            const compareButton = document.querySelector('.compare-button');
-            const compareContainer = document.querySelector('.compare-container');
-            const compareGrid = document.querySelector('.compare-grid');
-            const compareClose = document.querySelector('.compare-close');
-            const compareCount = document.querySelector('.compare-count');
-            
-            // Track selected images for comparison
-            const selectedImages = new Set();
-            
-            // Handle cell click to open lightbox
-            document.querySelectorAll('.cell-image').forEach(cell => {
-                cell.addEventListener('click', function(event) {
-                    if (event.ctrlKey || event.metaKey) {
-                        // Ctrl/Cmd + click to select for comparison
-                        toggleSelection(this);
-                    } else {
-                        // Regular click to open lightbox
-                        openLightbox(this);
-                    }
-                });
-            });
-            
-            // Close lightbox when clicking the close button
-            lightboxClose.addEventListener('click', function() {
-                lightbox.classList.remove('active');
-            });
-            
-            // Close lightbox when clicking outside the content
-            lightbox.addEventListener('click', function(event) {
-                if (event.target === lightbox) {
-                    lightbox.classList.remove('active');
-                }
-            });
-            
-            // Compare button click
-            compareButton.addEventListener('click', function() {
-                openCompareView();
-            });
-            
-            // Close compare view
-            compareClose.addEventListener('click', function() {
-                compareContainer.classList.remove('active');
-            });
-            
-            // Toggle selection for comparison
-            function toggleSelection(cell) {
-                const hash = cell.dataset.hash;
-                
-                if (selectedImages.has(hash)) {
-                    // Remove from selection
-                    selectedImages.delete(hash);
-                    cell.classList.remove('selected');
+</div>
+
+<!-- Compare mode -->
+<button class="compare-button">Compare Selected (<span class="compare-count">0</span>)</button>
+
+<div class="compare-container">
+    <div class="compare-close">&times;</div>
+    <div class="compare-grid"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lightbox functionality
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImage = document.querySelector('.lightbox-image');
+        const lightboxParams = document.querySelector('.lightbox-params');
+        const lightboxClose = document.querySelector('.lightbox-close');
+
+        // Compare functionality
+        const compareButton = document.querySelector('.compare-button');
+        const compareContainer = document.querySelector('.compare-container');
+        const compareGrid = document.querySelector('.compare-grid');
+        const compareClose = document.querySelector('.compare-close');
+        const compareCount = document.querySelector('.compare-count');
+
+        // Metadata toggle functionality
+        const toggleButton = document.getElementById('toggle-metadata');
+        const gridContainer = document.querySelector('.grid-container');
+
+        toggleButton.addEventListener('click', function () {
+            gridContainer.classList.toggle('show-metadata');
+            toggleButton.textContent = gridContainer.classList.contains('show-metadata') ? 'Hide Metadata' : 'Show Metadata';
+        });
+
+        // Track selected images for comparison
+        const selectedImages = new Set();
+
+        // Handle cell click to open lightbox
+        document.querySelectorAll('.cell-image').forEach(cell => {
+            cell.addEventListener('click', function (event) {
+                if (event.ctrlKey || event.metaKey) {
+                    // Ctrl/Cmd + click to select for comparison
+                    toggleSelection(this);
                 } else {
-                    // Add to selection
-                    selectedImages.add(hash);
-                    cell.classList.add('selected');
-                }
-                
-                // Update compare button
-                compareCount.textContent = selectedImages.size;
-                compareButton.classList.toggle('visible', selectedImages.size > 0);
-            }
-            
-            // Open lightbox with image and parameters
-            function openLightbox(cell) {
-                const imageUrl = cell.dataset.image;
-                const params = JSON.parse(cell.dataset.params);
-                
-                lightboxImage.src = imageUrl;
-                lightboxParams.textContent = JSON.stringify(params, null, 2);
-                lightbox.classList.add('active');
-            }
-            
-            // Open compare view with selected images
-            function openCompareView() {
-                // Clear previous content
-                compareGrid.innerHTML = '';
-                
-                // Add each selected image to the comparison grid
-                document.querySelectorAll('.cell-image.selected').forEach(cell => {
-                    const imageUrl = cell.dataset.image;
-                    const params = JSON.parse(cell.dataset.params);
-                    
-                    const compareItem = document.createElement('div');
-                    compareItem.className = 'compare-item';
-                    
-                    const compareImage = document.createElement('img');
-                    compareImage.className = 'compare-image';
-                    compareImage.src = imageUrl;
-                    compareImage.alt = 'Comparison image';
-                    
-                    const compareInfo = document.createElement('div');
-                    compareInfo.className = 'compare-info';
-                    
-                    const comparePre = document.createElement('pre');
-                    comparePre.textContent = JSON.stringify(params, null, 2);
-                    
-                    compareInfo.appendChild(comparePre);
-                    compareItem.appendChild(compareImage);
-                    compareItem.appendChild(compareInfo);
-                    compareGrid.appendChild(compareItem);
-                });
-                
-                // Show the compare container
-                compareContainer.classList.add('active');
-            }
-            
-            // Keyboard shortcuts
-            document.addEventListener('keydown', function(event) {
-                // Escape to close lightbox or compare view
-                if (event.key === 'Escape') {
-                    lightbox.classList.remove('active');
-                    compareContainer.classList.remove('active');
-                }
-                
-                // Enter to open compare view if there are selections
-                if (event.key === 'Enter' && selectedImages.size > 0) {
-                    openCompareView();
+                    // Regular click to open lightbox
+                    openLightbox(this);
                 }
             });
         });
-    </script>
+
+        // Close lightbox when clicking the close button
+        lightboxClose.addEventListener('click', function () {
+            lightbox.classList.remove('active');
+        });
+
+        // Close lightbox when clicking outside the content
+        lightbox.addEventListener('click', function (event) {
+            if (event.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+        // Compare button click
+        compareButton.addEventListener('click', function () {
+            openCompareView();
+        });
+
+        // Close compare view
+        compareClose.addEventListener('click', function () {
+            compareContainer.classList.remove('active');
+        });
+
+        // Toggle selection for comparison
+        function toggleSelection(cell) {
+            const hash = cell.dataset.hash;
+
+            if (selectedImages.has(hash)) {
+                // Remove from selection
+                selectedImages.delete(hash);
+                cell.classList.remove('selected');
+            } else {
+                // Add to selection
+                selectedImages.add(hash);
+                cell.classList.add('selected');
+            }
+
+            // Update compare button
+            compareCount.textContent = selectedImages.size;
+            compareButton.classList.toggle('visible', selectedImages.size > 0);
+        }
+
+        // Open lightbox with image and parameters
+        function openLightbox(cell) {
+            const imageUrl = cell.dataset.image;
+            const params = JSON.parse(cell.dataset.params);
+
+            lightboxImage.src = imageUrl;
+            lightboxParams.textContent = JSON.stringify(params, null, 2);
+            lightbox.classList.add('active');
+        }
+
+        // Open compare view with selected images
+        function openCompareView() {
+            // Clear previous content
+            compareGrid.innerHTML = '';
+
+            // Add each selected image to the comparison grid
+            document.querySelectorAll('.cell-image.selected').forEach(cell => {
+                const imageUrl = cell.dataset.image;
+                const params = JSON.parse(cell.dataset.params);
+
+                const compareItem = document.createElement('div');
+                compareItem.className = 'compare-item';
+
+                const compareImage = document.createElement('img');
+                compareImage.className = 'compare-image';
+                compareImage.src = imageUrl;
+                compareImage.alt = 'Comparison image';
+
+                const compareInfo = document.createElement('div');
+                compareInfo.className = 'compare-info';
+
+                const comparePre = document.createElement('pre');
+                comparePre.textContent = JSON.stringify(params, null, 2);
+
+                compareInfo.appendChild(comparePre);
+                compareItem.appendChild(compareImage);
+                compareItem.appendChild(compareInfo);
+                compareGrid.appendChild(compareItem);
+            });
+
+            // Show the compare container
+            compareContainer.classList.add('active');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (event) {
+            // Escape to close lightbox or compare view
+            if (event.key === 'Escape') {
+                lightbox.classList.remove('active');
+                compareContainer.classList.remove('active');
+            }
+
+            // Enter to open compare view if there are selections
+            if (event.key === 'Enter' && selectedImages.size > 0) {
+                openCompareView();
+            }
+
+            // 'M' key to toggle metadata
+            if (event.key === 'm' || event.key === 'M') {
+                gridContainer.classList.toggle('show-metadata');
+                toggleButton.textContent = gridContainer.classList.contains('show-metadata') ? 'Hide Metadata' : 'Show Metadata';
+            }
+        });
+    });
+</script>
 </body>
 </html>

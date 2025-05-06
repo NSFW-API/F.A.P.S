@@ -53,13 +53,13 @@ parameter combinations, then collates the outputs into a browsable HTML grid.
 You can copy and modify the example configuration:
 
 ```bash
-cp example-config.yaml my_sweep.yaml
+cp example-config.yaml sweep_configs/my_sweep.yaml
 ```
 
 Or generate a template:
 
 ```bash
-python cli.py template my_sweep.yaml
+python cli.py template sweep_configs/my_sweep.yaml
 ```
 
 ### 2. Edit the configuration file
@@ -117,23 +117,23 @@ params:
 
 ```bash
 # Make sure your virtual environment is active and API token is set
-python cli.py run my_sweep.yaml
+python cli.py run sweep_configs/my_sweep.yaml
 
 # Or if the CLI was properly installed:
-faps run my_sweep.yaml
+faps run sweep_configs/my_sweep.yaml
 ```
 
 Additional options:
 
 ```bash
 # Set concurrency level
-python cli.py run my_sweep.yaml --concurrency 4
+python cli.py run sweep_configs/my_sweep.yaml --concurrency 4
 
 # Overwrite existing results
-python cli.py run my_sweep.yaml --overwrite
+python cli.py run sweep_configs/my_sweep.yaml --overwrite
 
 # Retry failed jobs
-python cli.py run my_sweep.yaml --retry-failed
+python cli.py run sweep_configs/my_sweep.yaml --retry-failed
 ```
 
 ### 4. View the results
@@ -154,6 +154,13 @@ start runs/prompt_vs_cfg/grid.html
 - If you see "REPLICATE_API_TOKEN environment variable is not set", check your `.env` file and make sure it's in the
   correct location
 
+## Configuration Files
+
+Place your sweep configuration YAML files in the `sweep_configs/` directory. These files are git-ignored by default to avoid committing potentially sensitive parameters or API information.
+
+Example configuration files can be found in the project root:
+- `example-config.yaml` - Basic parameter sweep template
+
 ## Grid Interaction
 
 - **Thumbnail grid** - Lightweight JPG thumbs
@@ -163,15 +170,16 @@ start runs/prompt_vs_cfg/grid.html
 ## Directory Layout
 
 ```
-runs/<sweep_name>/
-├ cfg.yaml
-├ sweep_log.jsonl
-├ grid.html
-└ outputs/
-  └ <hash>/
-    ├ params.json
-    ├ output.png
-    └ thumb.jpg
+├ sweep_configs/      # User configuration YAML files (git-ignored)
+└ runs/<sweep_name>/  # Generated output
+  ├ cfg.yaml          # Copy of configuration used
+  ├ sweep_log.jsonl   # Job results log
+  ├ grid.html         # Generated visual grid
+  └ outputs/          # Result artifacts
+    └ <hash>/         # One directory per parameter combination
+      ├ params.json   # Parameters used
+      ├ output.png    # Original output image
+      └ thumb.jpg     # Thumbnail for grid
 ```
 
 ## Parameter Types
@@ -186,7 +194,7 @@ runs/<sweep_name>/
 If you just want to regenerate the HTML grid without running any new jobs:
 
 ```bash
-python cli.py render my_sweep.yaml
+python cli.py render sweep_configs/my_sweep.yaml
 ```
 
 ## Future Plans (Post-MVP)
